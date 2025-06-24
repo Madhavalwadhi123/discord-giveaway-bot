@@ -3,9 +3,9 @@ from discord.ext import commands
 import asyncio
 
 # === CONFIG ===
-GIVEAWAY_CHANNEL_ID = 1384413995532025938       # 🎁 Giveaway channel
-VERIFICATION_CHANNEL_ID = 1384413988997042177   # ✅ Verification reminder channel
-VERIFIED_ROLE_ID = 1386914375813562479          # 🛡️ Verified role
+GIVEAWAY_CHANNEL_ID = 665860505029836820       # 🎁 Giveaway channel
+VERIFICATION_CHANNEL_ID = 1021530129433903134   # ✅ Verification reminder channel
+VERIFIED_ROLE_ID = 648172461455573013          # 🛡️ Verified role
 DELAY_SECONDS = 30                               # ⏱️ Wait before first ping check
 DM_REMINDER_DELAY = 3600                         # ⏱️ DM after 1 hour
 
