@@ -10,6 +10,9 @@ GIVEAWAY_CHANNEL_IDS = [
 VERIFICATION_CHANNEL_ID = 1021530129433903134   # ✅ Verification reminder channel
 VERIFIED_ROLE_ID = 648172461455573013           # 🛡️ Verified role
 DELAY_SECONDS = 30                               # ⏱️ Wait before first ping check
+FIRST_DM_DELAY = 3600                            # 1 hour for first DM
+FOLLOWUP_DM_COUNT = 5
+FOLLOWUP_DM_INTERVAL = 3 * 60 * 60               # 3 hours between follow-up DMs
 
 # === INTENTS ===
 intents = discord.Intents.default()
@@ -58,23 +61,34 @@ async def on_member_join(member):
             )
         print(f'❌ {member} not verified. Sent reminder in verification channel.')
 
-        # Send up to 5 DMs every 3 hours if still unverified
-        max_reminders = 5
-        interval = 3 * 60 * 60  # 3 hours in seconds
+        # 🕐 Wait 1 hour for first DM
+        await asyncio.sleep(FIRST_DM_DELAY)
 
-        for i in range(max_reminders):
-            await asyncio.sleep(interval)
+        if verified_role not in member.roles and member.id not in pinged_users:
+            try:
+                await member.send(
+                    "Hey! We’ve got **daily and weekly giveaways** happening right now in **BloxEarn** 🎁\n"
+                    "Make sure you **verify in our server** so you don’t miss out!\n"
+                    "👉 https://discord.com/channels/611680363106009101/1021530129433903134"
+                )
+                print(f'📬 Sent initial DM to {member}')
+            except discord.Forbidden:
+                print(f'❌ Could not DM {member} (DMs likely closed)')
+                return
+
+        # 🔁 Send 5 more follow-up DMs every 3 hours if still unverified
+        for _ in range(FOLLOWUP_DM_COUNT):
+            await asyncio.sleep(FOLLOWUP_DM_INTERVAL)
             if verified_role in member.roles or member.id in pinged_users:
                 print(f'✅ {member} verified. Stopping DM reminders.')
                 break
             try:
                 await member.send(
-                    f"⏰ Reminder #{i+1}!\n"
-                    "We’ve got **daily and weekly giveaways** happening right now in **BloxEarn** 🎁\n"
-                    "Make sure you **verify in our server** so you don’t miss out!\n"
+                    "Hey! Just a reminder — don’t miss out on our **daily and weekly giveaways** in **BloxEarn** 🎁\n"
+                    "Verify in the server now to access them!\n"
                     "👉 https://discord.com/channels/611680363106009101/1021530129433903134"
                 )
-                print(f'📬 Sent DM reminder #{i+1} to {member}')
+                print(f'📬 Sent follow-up DM to {member}')
             except discord.Forbidden:
                 print(f'❌ Could not DM {member} (DMs likely closed)')
                 break
