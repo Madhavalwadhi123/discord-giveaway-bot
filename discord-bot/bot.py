@@ -5,12 +5,11 @@ import asyncio
 # === CONFIG ===
 GIVEAWAY_CHANNEL_IDS = [
     665860505029836820,       # 🎁 Daily Giveaway channel
-    1346118769935777863        # 🗓️ Weekly Giveaway channel (replace this with your real channel ID)
+    1346118769935777863        # 🗓️ Weekly Giveaway channel
 ]
 VERIFICATION_CHANNEL_ID = 1021530129433903134   # ✅ Verification reminder channel
 VERIFIED_ROLE_ID = 648172461455573013           # 🛡️ Verified role
 DELAY_SECONDS = 30                               # ⏱️ Wait before first ping check
-DM_REMINDER_DELAY = 3600                         # ⏱️ DM after 1 hour
 
 # === INTENTS ===
 intents = discord.Intents.default()
@@ -59,18 +58,26 @@ async def on_member_join(member):
             )
         print(f'❌ {member} not verified. Sent reminder in verification channel.')
 
-        # DM reminder after 1 hour if still not verified
-        await asyncio.sleep(DM_REMINDER_DELAY)
-        if verified_role not in member.roles and member.id not in pinged_users:
+        # Send up to 5 DMs every 3 hours if still unverified
+        max_reminders = 5
+        interval = 3 * 60 * 60  # 3 hours in seconds
+
+        for i in range(max_reminders):
+            await asyncio.sleep(interval)
+            if verified_role in member.roles or member.id in pinged_users:
+                print(f'✅ {member} verified. Stopping DM reminders.')
+                break
             try:
                 await member.send(
-                    "Hey! We got a **daily and weekly giveaway** going on right now in **BloxEarn** 🎁\n"
-                    "Make sure you **verify in our server** so you don't miss out! "
-                    "https://discord.com/channels/611680363106009101/1021530129433903134"
+                    f"⏰ Reminder #{i+1}!\n"
+                    "We’ve got **daily and weekly giveaways** happening right now in **BloxEarn** 🎁\n"
+                    "Make sure you **verify in our server** so you don’t miss out!\n"
+                    "👉 https://discord.com/channels/611680363106009101/1021530129433903134"
                 )
-                print(f'📬 Sent DM reminder to {member}')
+                print(f'📬 Sent DM reminder #{i+1} to {member}')
             except discord.Forbidden:
                 print(f'❌ Could not DM {member} (DMs likely closed)')
+                break
 
 @bot.event
 async def on_member_update(before, after):
@@ -92,4 +99,4 @@ async def on_member_update(before, after):
         print(f'⚡ Instant ping for {after} on verify.')
 
 # === RUN BOT ===
-bot.run('MTM4NjkxMDU5OTE4NzAwOTYwNg.GNyJqS.OGgpixNZv_LtvgB4e22ltdY87BRgxch_eBduQ0')  # ⚠️ Hardcoded token — make sure repo is private
+bot.run('MTM4NjkxMDU5OTE4NzAwOTYwNg.GNyJqS.OGgpixNZv_LtvgB4e22ltdY87BRgxch_eBduQ0')  # ⚠️ Make sure your repo is private
