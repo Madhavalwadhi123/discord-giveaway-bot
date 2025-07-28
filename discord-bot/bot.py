@@ -113,4 +113,5 @@ async def on_member_update(before, after):
         print(f'⚡ Instant ping for {after} on verify.')
 
 # === RUN BOT ===
-bot.run('MTM4NjkxMDU5OTE4NzAwOTYwNg.GNyJqS.OGgpixNZv_LtvgB4e22ltdY87BRgxch_eBduQ0')  # ⚠️ Make sure your repo is private
+import os
+bot.run(os.getenv("DISCORD_TOKEN"))
