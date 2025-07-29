@@ -2,6 +2,24 @@ import discord
 from discord.ext import commands
 import asyncio
 
+
+from flask import Flask
+import threading
+
+# Health check server
+server = Flask(__name__)
+@server.route('/')
+def ping():
+    return "pong"
+
+# Start in background
+threading.Thread(
+    target=server.run,
+    kwargs={'host':'0.0.0.0','port':8080},
+    daemon=True
+).start()
+
+
 # === CONFIG ===
 GIVEAWAY_CHANNEL_IDS = [
     665860505029836820,       # 🎁 Daily Giveaway channel
