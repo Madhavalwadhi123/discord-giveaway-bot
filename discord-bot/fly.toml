@@ -1,0 +1,8 @@
+app = "your-bot-name"  # Change this!
+primary_region = "syd"  # Sydney (or choose another: lax, dfw, etc.)
+
+[build]
+dockerfile = "Dockerfile"
+
+[env]
+DISCORD_TOKEN = "your_token_here"  # Or use `fly secrets set` later
