@@ -1,8 +1,12 @@
-app = "your-bot-name"  # Change this!
-primary_region = "syd"  # Sydney (or choose another: lax, dfw, etc.)
+app = "your-bot-name"  # CHANGE THIS to a unique name
+primary_region = "syd"  # or "lax", "dfw" etc.
 
 [build]
-dockerfile = "Dockerfile"
+  dockerfile = "Dockerfile"
 
 [env]
-DISCORD_TOKEN = "your_token_here"  # Or use `fly secrets set` later
+  DISCORD_TOKEN = "your_token_here"  # Or use fly secrets set
+
+[http_service]
+  internal_port = 8080  # For health checks
+  force_https = true
